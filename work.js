@@ -29,20 +29,48 @@ var onLoad = function (serverData) {
 };
 
 var onListLoad = function (serverData) {
-  var select = document.querySelector('select');
+  var selectFirst = document.querySelector('select.first');
+  var selectSecond = document.querySelector('select.second');
 
-  for (var i = 0; i < serverData.data.length; i++) {
-    var option = document.createElement('option');
-    option.innerHTML = serverData.data[i];
-    select.appendChild(option);
+  var pairs = window.util.createCurrencyLists(serverData.data);
+
+  for (var i = 0; i < pairs.first.length; i++) {
+    window.util.addOption(selectFirst, pairs.first[i]);
   }
+
+  for (i = 0; i < pairs.second.length; i++) {
+    window.util.addOption(selectSecond, pairs.second[i]);
+  }
+
+  selectFirst.addEventListener('change', function () {
+    if (selectFirst.options[selectFirst.selectedIndex].innerHTML === 'не выбрано') {
+      window.util.clearSelect(selectSecond);
+
+      for (i = 0; i < pairs.second.length; i++) {
+        window.util.addOption(selectSecond, pairs.second[i]);
+      }
+    } else {
+      window.util.setList(selectFirst, selectSecond, serverData, pairs);
+    }
+  });
+
+  selectSecond.addEventListener('change', function () {
+    if (selectSecond.options[selectSecond.selectedIndex].innerHTML === 'не выбрано') {
+      window.util.clearSelect(selectFirst);
+
+      for (i = 0; i < pairs.first.length; i++) {
+        window.util.addOption(selectFirst, pairs.first[i]);
+      }
+    }
+  });
 };
 
 window.backend.load('https://currate.ru/api/?get=currency_list&key=41c457c38223f68ed751b29e80ddcfc5', onListLoad, onError);
 
 document.querySelector('button').addEventListener('click', function () {
-  var select = document.querySelector('select');
-  var pair = select.options[select.selectedIndex].innerHTML;
+  var selectFirst = document.querySelector('select.first');
+  var selectSecond = document.querySelector('select.second');
+  var pair = selectFirst.options[selectFirst.selectedIndex].value + selectSecond.options[selectSecond.selectedIndex].value;
   var url = 'https://currate.ru/api/?get=rates&pairs=' + pair + '&key=41c457c38223f68ed751b29e80ddcfc5';
   window.backend.load(url, onLoad, onError);
 });
