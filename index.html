@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="utf-8">
+        <meta charset='utf-8'>
         <title>Курс валют</title>
     </head>
     <body>
@@ -9,11 +9,18 @@
             <h1>Курс валют</h1>
         </div>
         <label>Валютная пара</label>
-        <select></select>
+        <select class='first'>
+            <option>не выбрано</option>
+        </select>
+        <select class='second'>
+            <option>не выбрано</option>
+        </select>
         <button style="width:100px">Показать</button>
         <label class='output'></label>
 
+        <script src='currencyNames.js'></script>
         <script src='backend.js'></script>
+        <script src='util.js'></script>
         <script src='work.js'></script>
     </body>
 </html>
